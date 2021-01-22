@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
-	gg "github.com/lycblank/goprogressbar"
+	bar "github.com/lycblank/goprogressbar"
 	"github.com/makiuchi-d/gozxing"
 	"github.com/makiuchi-d/gozxing/qrcode"
-	goQrcode "github.com/skip2/go-qrcode"
+	goQrCode "github.com/skip2/go-qrcode"
 	"image"
 	"io/ioutil"
 	"log"
@@ -116,7 +116,7 @@ func main() {
 		num := rand.Intn(5) + 5
 		fmt.Println("休息" + strconv.Itoa(num) + "分钟后查询")
 
-		bar := gg.NewProgressBar(int64(num) * 60)
+		bar := bar.NewProgressBar(int64(num) * 60)
 		for i := 1; i <= int(num*60); i++ {
 			bar.Play(int64(i))
 			time.Sleep(1 * time.Second)
@@ -124,10 +124,8 @@ func main() {
 		bar.Finish()
 	}
 
-
-
 }
-func ss(ctx context.Context, ) {
+func ss(ctx context.Context) {
 	defer chromedp.Stop()
 	if err := chromedp.Run(ctx, chromedp.Navigate("https://detail.tmall.com/item.htm?id=624275284278")); err != nil {
 		log.Fatal(err)
@@ -170,14 +168,16 @@ func checkGoods() chromedp.ActionFunc {
 		if err = chromedp.Text(`#J_DetailMeta > div.tm-clear > div.tb-property > div > div.tb-key > div > div > dl:nth-child(1) > dd > ul`, &res, chromedp.ByID).Do(ctx); err != nil {
 			return
 		}
-		log.Println(strings.TrimSpace(res))
+		log.Println(res)
 
 		if strings.Contains(strings.TrimSpace(res), "175/88A") {
+			//http://sc.ftqq.com/?c=code
 			var s serverJiang.ServerJiang
 			ss := make(map[string]string)
 			ss["text"] = "商品到货通知"
 			ss["desp"] = "优衣库到货了！！！！"
 			s.Data = ss
+			s.SCKey = "xxx"
 			s.Do()
 		}
 
@@ -232,7 +232,7 @@ func printQRCode(code []byte) (err error) {
 	}
 
 	// 4. 用结果来获取go-qrcode对象（注意这里我用了库的别名）
-	qr, err := goQrcode.New(res.String(), goQrcode.High)
+	qr, err := goQrCode.New(res.String(), goQrCode.High)
 	if err != nil {
 		return
 	}

@@ -10,7 +10,8 @@ import (
 )
 
 type ServerJiang struct {
-	Data map[string]string
+	SCKey string
+	Data  map[string]string
 }
 
 func (s ServerJiang) Do() {
@@ -24,13 +25,16 @@ func (s ServerJiang) Do() {
 	for key, val := range s.Data {
 		DataUrlVal.Add(key, val)
 	}
-	resp, err := client.Post("https://sc.ftqq.com/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.send", "application/x-www-form-urlencoded", strings.NewReader(DataUrlVal.Encode()))
+
+	resp, err := client.Post(fmt.Sprintf("https://sc.ftqq.com/%s.send", s.SCKey), "application/x-www-form-urlencoded", strings.NewReader(DataUrlVal.Encode()))
 	if err != nil {
 		panic(err)
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
-
-	fmt.Println(body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(body))
 }

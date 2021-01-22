@@ -1,0 +1,11 @@
+=========================
+# 忽略windows 产物
+*.exe
+*.exe~
+
+# 忽略.idea
+.idea/
+
+# 忽略 登录信息
+code.png
+cookies.tmp
