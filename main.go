@@ -22,50 +22,28 @@ import (
 )
 
 func main() {
-	//chromdp依赖context上限传递参数
-	//ctx, _ := chromedp.NewExecAllocator(
-	//	context.Background(),
-	//
-	//	// 以默认配置的数组为基础，覆写headless参数
-	//	// 当然也可以根据自己的需要进行修改，这个flag是浏览器的设置
-	//	append(
-	//		chromedp.DefaultExecAllocatorOptions[:],
-	//		chromedp.Flag("headless", false),
-	//	)...,
-	//)
-	//// 创建新的chromedp上下文对象，超时时间的设置不分先后
-	//// 注意第二个返回的参数是cancel()，只是我省略了
-	//ctx, _ = context.WithTimeout(ctx, 300*time.Second)
-	//ctx, _ = chromedp.NewContext(
-	//	ctx,
-	//	// 设置日志方法
-	//	chromedp.WithLogf(log.Printf),
-	//)
-
 	///////////////////////////
-
-	// create chrome instance
-	ctx, cancel := chromedp.NewContext(
+	//chromdp依赖context上限传递参数
+	ctx, _ := chromedp.NewExecAllocator(
 		context.Background(),
+
+		// 以默认配置的数组为基础，覆写headless参数
+		// 当然也可以根据自己的需要进行修改，这个flag是浏览器的设置
+		append(
+			chromedp.DefaultExecAllocatorOptions[:],
+			chromedp.Flag("headless", false),
+		)...,
+	)
+	// 创建新的chromedp上下文对象，超时时间的设置不分先后
+	// 注意第二个返回的参数是cancel()，只是我省略了
+	ctx, _ = context.WithTimeout(ctx, 300*time.Second)
+	ctx, _ = chromedp.NewContext(
+		ctx,
+		// 设置日志方法
 		chromedp.WithLogf(log.Printf),
 	)
-	defer cancel()
-	//
-	//// create a timeout
-	//ctx, cancel = context.WithTimeout(ctx, 50*time.Second)
-	//defer cancel()
-	//
-	//
-	width, height := 1920, 1080
-	//
-	////打开购物车页面
-	//if err := chromedp.Run(ctx, emulation.SetDeviceMetricsOverride(int64(width), int64(height), 1.0, false)); err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	if err := chromedp.Run(ctx, chromedp.EmulateViewport(int64(width), int64(height))); err != nil {
-		log.Fatal(err)
-	}
+
+	///////////////////////////
 
 	// create chrome instance
 	//ctx, cancel := chromedp.NewContext(
@@ -73,10 +51,14 @@ func main() {
 	//	chromedp.WithLogf(log.Printf),
 	//)
 	//defer cancel()
-	//
-	//// create a timeout
-	//ctx, cancel = context.WithTimeout(ctx, 15*time.Second)
-	//defer cancel()
+
+	///////////////////////////
+
+	width, height := 1920, 1080
+
+	if err := chromedp.Run(ctx, chromedp.EmulateViewport(int64(width), int64(height))); err != nil {
+		log.Fatal(err)
+	}
 
 	// 加载cookies
 	if err := chromedp.Run(ctx, loadCookies()); err != nil {
